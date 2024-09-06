@@ -36,43 +36,37 @@ void print(Node* head) {
     cout << endl;
 }
 
-Node* deleteAllOccurrences(Node* head, int k) {
+Node* removeDuplicates(Node* head)     {
     Node* temp = head;
-    while (temp != nullptr) {
-        if (temp->data == k) {
-            if (temp == head) {
-                head = temp->next;
-                if (head != nullptr) {
-                    head->back = nullptr;
-                }
-                delete temp;
-                temp = head;
-            } else {
-                Node* nextNode = temp->next;
-                Node* prevNode = temp->back;
-                if (nextNode != nullptr) nextNode->back = prevNode;
-                if (prevNode != nullptr) prevNode->next = nextNode;
-                delete temp;
-                temp = nextNode;
-            }
-        } else {
-            temp = temp->next;
+    
+    while (temp != nullptr && temp->next != nullptr) {
+        Node* nextNode = temp->next;
+        while (nextNode != nullptr && nextNode->data == temp->data) {
+            Node* duplicate = nextNode;
+            nextNode = nextNode->next;
+            free(duplicate);
         }
+        temp->next = nextNode;
+        if (nextNode != nullptr) {
+            nextNode->back = temp;
+        }
+        
+        temp = temp->next;
     }
+    
     return head;
 }
 
 int main() {
-    vector<int> arr = {4, 5, 6, 5, 7, 5, 8};
+    vector<int> arr = {1, 2, 2, 3, 4, 4, 4, 5, 6};
     Node* head = convertArr2DLL(arr);
 
     cout << "Original list: ";
     print(head);
 
-    int key = 5;
-    head = deleteAllOccurrences(head, key);
+    head = removeDuplicates(head);
 
-    cout << "List after deleting all occurrences of " << key << ": ";
+    cout << "List after removing duplicates: ";
     print(head);
 
     return 0;
